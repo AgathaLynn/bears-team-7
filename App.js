@@ -17,13 +17,17 @@ const styles = StyleSheet.create({
   userText: {
     fontSize: 24,
   },
+  errorText: {
+    fontSize: 24,
+    color: 'red',
+  },
 });
 
 const initialState = {
   user: null,
   email: 'a@a.com',
   password: '123456',
-  error: '',
+  error: null,
 };
 export default class App extends React.Component {
   constructor() {
@@ -36,7 +40,10 @@ export default class App extends React.Component {
       if (user) {
         return this.setState(() => ({ user, email: '', password: '' }));
       }
-      return error;
+      if (error && error.message) {
+        setTimeout(() => this.setState({ error: null }), 4000);
+        return this.setState({ error: error.message });
+      }
     });
   }
 
@@ -44,9 +51,9 @@ export default class App extends React.Component {
     firebaseApp
       .auth()
       .signInWithEmailAndPassword(email, password)
-      // a successful signin is seen by watchAuthState (above); a failure triggers this `catch`:
+      // a successful signin is seen by onAuthStateChanged (in cDM); failure triggers this `catch`:
       .catch(error => {
-        setTimeout(() => this.setState({ error: '' }), 4000);
+        setTimeout(() => this.setState({ error: null }), 4000);
         return this.setState({ error: error.message });
       });
   };
@@ -80,16 +87,22 @@ export default class App extends React.Component {
     // ...else it *is* null, so return a View with 2 inputs and a Submit button.
     return (
       <View style={styles.container}>
-        <Text style={{ fontSize: 24 }}>this.state.user is currently null.</Text>
+        {this.state.error
+          ? <Text style={styles.errorText}>
+              {this.state.error}
+            </Text>
+          : <Text style={styles.userText}>
+              this.state.user is currently null.
+            </Text>}
         <Input
           label="email"
           value={this.state.email}
-          onChange={email => this.setState({ email })}
+          onChangeText={email => this.setState({ email })}
         />
         <Input
           label="password"
           value={this.state.password}
-          onChange={password => this.setState({ password })}
+          onChangeText={password => this.setState({ password })}
         />
         <PrimaryButton
           title="Submit"
