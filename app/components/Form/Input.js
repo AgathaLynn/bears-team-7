@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { View } from "react-native";
-import { FormLabel, FormInput } from "react-native-elements";
-import styles from "./styles";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { View } from 'react-native';
+import { FormLabel, FormInput } from 'react-native-elements';
+import styles from './styles';
 
 const Input = props =>
   (<View style={styles.view}>

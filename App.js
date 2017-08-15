@@ -1,39 +1,22 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { firebaseApp, firebaseDb } from './config/firebase';
 
-/* NOTE: components imported on next line are built using react-native-elements, which
-* will throw 'propTypes' errors in console (even though everything's fine, see:
-* https://github.com/react-native-training/react-native-elements/issues/502#issuecomment-317446366.)
-*/
-import { Input, PrimaryButton } from './components/Form';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    paddingTop: 100,
-  },
-  userText: {
-    fontSize: 24,
-  },
-  errorText: {
-    fontSize: 24,
-    color: 'red',
-  },
-});
+import { firebaseApp } from './app/config/firebase';
+import { Tabs, WelcomeRouter } from './app/config/router';
+import Splash from './app/screens/Splash';
 
 const initialState = {
   user: null,
   email: 'a@a.com',
   password: '123456',
   error: null,
+  loading: false,
 };
 export default class App extends React.Component {
   constructor() {
     super();
-    this.state = initialState;
+    this.state = { ...initialState, loading: true };
   }
+
   componentDidMount() {
     // start watching for successful login or logout
     firebaseApp.auth().onAuthStateChanged((user, error) => {
@@ -45,6 +28,8 @@ export default class App extends React.Component {
         return this.setState({ error: error.message });
       }
     });
+    // splash screen loading timer
+    setTimeout(() => this.setState({ loading: false }), 1000);
   }
 
   loginUser = (email, password) => {
@@ -60,55 +45,48 @@ export default class App extends React.Component {
 
   logoutUser = () => {
     firebaseApp.auth().signOut().then(() => {
-      this.setState(initialState);
+      // return to initialState (after delay for splash screen)
+      setTimeout(() => this.setState(initialState), 1000);
+      this.setState({ loading: true });
     });
   };
 
+  createUser = (email, password) => {
+    firebaseApp.auth().createUserWithEmailAndPassword(email, password).catch(error => {
+      setTimeout(() => this.setState({ error: null }), 4000);
+      return this.setState(() => ({ error: error.message }));
+    });
+  };
+
+  handleEmailChange = email => {
+    this.setState({ email });
+  };
+  handlePasswordChange = password => {
+    this.setState({ password });
+  };
+
   render() {
-    // for now, in lieu of more-complex 'navigation' between pages, watch for a user object.
-    // if this.state.user isn't null, there must be a user - so show some details and a logout btn
-    if (this.state.user !== null) {
-      const { displayName, email, emailVerified } = this.state.user;
-      return (
-        <View style={styles.container}>
-          <Text style={styles.userText}>
-            {email} is logged in
-          </Text>
-          <Text style={styles.userText}>
-            displayName: {displayName || 'none'}
-          </Text>
-          <Text style={styles.userText}>
-            emailVerified: {emailVerified ? 'yes' : 'no'}
-          </Text>
-          <PrimaryButton title="Log out" onPress={this.logoutUser} />
-        </View>
-      );
+    if (this.state.loading) {
+      return <Splash />;
     }
-    // ...else it *is* null, so return a View with 2 inputs and a Submit button.
+    if (this.state.user !== null) {
+      // react-navigation allows one object called `screenProps` to be passed to a navigator.
+      // Screens inside <Tabs> require user obj and the logoutUser function...
+      return <Tabs screenProps={{ user: this.state.user, logout: this.logoutUser }} />;
+    }
     return (
-      <View style={styles.container}>
-        {this.state.error
-          ? <Text style={styles.errorText}>
-              {this.state.error}
-            </Text>
-          : <Text style={styles.userText}>
-              this.state.user is currently null.
-            </Text>}
-        <Input
-          label="email"
-          value={this.state.email}
-          onChangeText={email => this.setState({ email })}
-        />
-        <Input
-          label="password"
-          value={this.state.password}
-          onChangeText={password => this.setState({ password })}
-        />
-        <PrimaryButton
-          title="Submit"
-          onPress={() => this.loginUser(this.state.email, this.state.password)}
-        />
-      </View>
+      // and screens inside <WelcomeRouter> need everything else...
+      <WelcomeRouter
+        screenProps={{
+          email: this.state.email,
+          password: this.state.password,
+          error: this.state.error,
+          handleEmailChange: this.handleEmailChange,
+          handlePasswordChange: this.handlePasswordChange,
+          login: this.loginUser,
+          create: this.createUser,
+        }}
+      />
     );
   }
 }

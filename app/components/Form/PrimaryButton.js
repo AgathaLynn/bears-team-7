@@ -1,6 +1,6 @@
-import React, { PropTypes } from "react";
-import { Button } from "react-native-elements";
-import styles from "./styles";
+import React, { PropTypes } from 'react';
+import { Button } from 'react-native-elements';
+import styles from './styles';
 
 const PrimaryButton = props => {
   if (props.loading) {
