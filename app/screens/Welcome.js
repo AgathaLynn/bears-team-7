@@ -9,14 +9,12 @@ import colors from '../config/colors';
 import fakeJobs from '../data/fakeJobs';
 
 class Welcome extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      jobs: fakeJobs,
-    };
-  }
+  state = {
+    jobs: fakeJobs,
+  };
+
   componentDidMount() {
-    // fetch() jobs here in real use
+    // fetch jobs here in real use
   }
   _renderCard = ({ item }) =>
     (<Card>

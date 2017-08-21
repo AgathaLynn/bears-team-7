@@ -6,8 +6,6 @@ import Splash from './app/screens/Splash';
 
 const initialState = {
   user: null,
-  email: 'a@a.com',
-  password: '123456',
   error: null,
   loading: false,
 };
@@ -51,18 +49,15 @@ export default class App extends React.Component {
     });
   };
 
-  createUser = (email, password) => {
+  createUser = (email, password, repeatPassword) => {
+    if (password !== repeatPassword) {
+      setTimeout(() => this.setState({ error: null }), 4000);
+      return this.setState({ error: 'Password and Repeat Password must match' });
+    }
     firebaseApp.auth().createUserWithEmailAndPassword(email, password).catch(error => {
       setTimeout(() => this.setState({ error: null }), 4000);
       return this.setState(() => ({ error: error.message }));
     });
-  };
-
-  handleEmailChange = email => {
-    this.setState({ email });
-  };
-  handlePasswordChange = password => {
-    this.setState({ password });
   };
 
   render() {
@@ -75,16 +70,12 @@ export default class App extends React.Component {
       return <Tabs screenProps={{ user: this.state.user, logout: this.logoutUser }} />;
     }
     return (
-      // and screens inside <WelcomeRouter> need everything else...
+      // and screens inside <WelcomeRouter> need user-auth functions and possible error
       <WelcomeRouter
         screenProps={{
-          email: this.state.email,
-          password: this.state.password,
-          error: this.state.error,
-          handleEmailChange: this.handleEmailChange,
-          handlePasswordChange: this.handlePasswordChange,
           login: this.loginUser,
           create: this.createUser,
+          error: this.state.error,
         }}
       />
     );

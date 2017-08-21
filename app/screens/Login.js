@@ -1,35 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { KeyboardAvoidingView, TouchableOpacity, Keyboard } from 'react-native';
 
-import Container from '../components/Container';
-/* NOTE: components imported on next line are built using react-native-elements, which
-* will throw 'propTypes' errors in console (even though everything's fine, see:
-* https://github.com/react-native-training/react-native-elements/issues/502#issuecomment-317446366.)
-*/
-import { Input, PrimaryButton } from '../components/Form';
+import { Input, PrimaryButton } from '../components/Form'; // *see Foonote
 import { ErrorText, LargeText } from '../components/Text';
 
 class Login extends React.Component {
+  state = {
+    email: '',
+    password: '',
+  };
   render() {
-    const {
-      error,
-      email,
-      password,
-      login,
-      handleEmailChange,
-      handlePasswordChange,
-    } = this.props.screenProps;
+    const { error, login } = this.props.screenProps;
     return (
-      <Container>
+      <KeyboardAvoidingView behavior="position">
         {error
-          ? <ErrorText>
+          ? <ErrorText
+            style={{ paddingTop: 40, paddingBottom: 10, color: 'red', textAlign: 'center' }}
+          >
             {error}
           </ErrorText>
-          : <LargeText>the user object is currently null.</LargeText>}
-        <Input label="email" value={email} onChangeText={handleEmailChange} />
-        <Input label="password" value={password} onChangeText={handlePasswordChange} />
-        <PrimaryButton title="Submit" onPress={() => login(email, password)} />
-      </Container>
+          : <TouchableOpacity
+            style={{
+              width: '100%',
+              paddingTop: 100,
+              backgroundColor: 'transparent',
+            }}
+            onPress={() => Keyboard.dismiss()}
+          />}
+        <LargeText>Log in to your account</LargeText>
+        <Input
+          label="email"
+          value={this.state.email}
+          onChangeText={email => this.setState({ email })}
+        />
+        <Input
+          label="password"
+          value={this.state.password}
+          onChangeText={password => this.setState({ password })}
+        />
+        <PrimaryButton
+          title="Submit"
+          onPress={() => login(this.state.email, this.state.password)}
+        />
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -37,12 +51,13 @@ class Login extends React.Component {
 Login.propTypes = {
   screenProps: PropTypes.shape({
     error: PropTypes.string,
-    email: PropTypes.string.isRequired,
-    password: PropTypes.string.isRequired,
     login: PropTypes.func.isRequired,
-    handleEmailChange: PropTypes.func.isRequired,
-    handlePasswordChange: PropTypes.func.isRequired,
   }).isRequired,
 };
 
 export default Login;
+
+/* FOOTNOTE: components imported on this line are built using react-native-elements, which
+* will throw 'propTypes' errors in console (even though everything's fine, see:
+* https://github.com/react-native-training/react-native-elements/issues/502#issuecomment-317446366.)
+*/

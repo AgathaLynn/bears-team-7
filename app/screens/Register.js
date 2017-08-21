@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import Container from '../components/Container';
+import { KeyboardAvoidingView, Keyboard, TouchableOpacity } from 'react-native';
+// import Container from '../components/Container';
 /* NOTE: components imported on next line are built using react-native-elements, which
 * will throw 'propTypes' errors in console (even though everything's fine, see:
 * https://github.com/react-native-training/react-native-elements/issues/502#issuecomment-317446366.)
@@ -10,43 +10,52 @@ import { Input, PrimaryButton } from '../components/Form';
 import { ErrorText, LargeText } from '../components/Text';
 
 class Register extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      repeatPassword: '',
-    };
-  }
-  handleRepeatPassword = repeatPassword => this.setState({ repeatPassword });
-  // handleLogin = (email, password, repeatPassword) => {
-  //   if (!email || !password || !repeatPassword) return false;
-  //   if (password !== repeatPassword) return false;
-  //   return create(email, password);
-  // }
+  state = {
+    email: '',
+    password: '',
+    repeatPassword: '',
+  };
+
   render() {
-    const {
-      error,
-      email,
-      password,
-      handleEmailChange,
-      handlePasswordChange,
-      create,
-    } = this.props.screenProps;
+    const { error, create } = this.props.screenProps;
     return (
-      <Container>
+      <KeyboardAvoidingView behavior="position">
         {error
-          ? <ErrorText>
+          ? <ErrorText
+            style={{ paddingTop: 40, paddingBottom: 10, color: 'red', textAlign: 'center' }}
+          >
             {error}
           </ErrorText>
-          : <LargeText>the user object is currently null.</LargeText>}
-        <Input label="email" value={email} onChangeText={handleEmailChange} />
-        <Input label="password" value={password} onChangeText={handlePasswordChange} />
+          : <TouchableOpacity
+            style={{
+              width: '100%',
+              paddingTop: 100,
+              backgroundColor: 'transparent',
+            }}
+            onPress={() => Keyboard.dismiss()}
+          />}
+
+        <LargeText>Register for a new account:</LargeText>
+        <Input
+          label="email"
+          value={this.state.email}
+          onChangeText={email => this.setState({ email })}
+        />
+        <Input
+          label="password"
+          value={this.state.password}
+          onChangeText={password => this.setState({ password })}
+        />
         <Input
           label="repeatPassword"
           value={this.state.repeatPassword}
-          onChangeText={this.handleRepeatPassword}
+          onChangeText={repeatPassword => this.setState({ repeatPassword })}
         />
-        <PrimaryButton title="Create Account" onPress={() => create(email, password)} />
-      </Container>
+        <PrimaryButton
+          title="Create Account"
+          onPress={() => create(this.state.email, this.state.password, this.state.repeatPassword)}
+        />
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -54,11 +63,7 @@ class Register extends React.Component {
 Register.propTypes = {
   screenProps: PropTypes.shape({
     error: PropTypes.string,
-    email: PropTypes.string.isRequired,
-    password: PropTypes.string.isRequired,
     create: PropTypes.func.isRequired,
-    handleEmailChange: PropTypes.func.isRequired,
-    handlePasswordChange: PropTypes.func.isRequired,
   }).isRequired,
 };
 

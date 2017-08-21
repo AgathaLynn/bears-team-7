@@ -9,21 +9,23 @@ const fakeJobs = [
   {
     id: 2,
     title: 'Junior Software Engineer',
-    description: 'An okay job',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     tags: ['javascript', 'react'],
     applied: 22,
   },
   {
     id: 3,
     title: 'Software Engineer',
-    description: 'A job',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elit est, dictum rhoncus odio quis, sodales placerat nisi. ',
     tags: ['javascript', 'react-native'],
     applied: 4,
   },
   {
     id: 4,
     title: 'Front End Developer',
-    description: 'Front-end mobile app development',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elit est, dictum rhoncus odio quis, sodales placerat nisi. ',
     tags: ['javascript', 'react-native'],
     applied: 15,
   },
@@ -37,7 +39,8 @@ const fakeJobs = [
   {
     id: 6,
     title: 'Senior Software Engineer',
-    description: 'A real good job',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elit est, dictum rhoncus odio quis, sodales placerat nisi. ',
     tags: ['javascript', 'C++'],
     applied: 5,
   },
@@ -58,7 +61,8 @@ const fakeJobs = [
   {
     id: 9,
     title: 'Front End Developer',
-    description: 'Front-end mobile app development',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elit est, dictum rhoncus odio quis, sodales placerat nisi. ',
     tags: ['javascript', 'react-native'],
     applied: 15,
   },
@@ -79,7 +83,8 @@ const fakeJobs = [
   {
     id: 12,
     title: 'Junior Software Engineer',
-    description: 'An okay job',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elit est, dictum rhoncus odio quis, sodales placerat nisi. ',
     tags: ['javascript', 'react'],
     applied: 22,
   },
@@ -93,14 +98,16 @@ const fakeJobs = [
   {
     id: 14,
     title: 'Front End Developer',
-    description: 'Front-end mobile app development',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elit est, dictum rhoncus odio quis, sodales placerat nisi. ',
     tags: ['javascript', 'react-native'],
     applied: 15,
   },
   {
     id: 15,
     title: 'Product Manager',
-    description: 'Test',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elit est, dictum rhoncus odio quis, sodales placerat nisi. ',
     tags: ['agile'],
     applied: 2,
   },
