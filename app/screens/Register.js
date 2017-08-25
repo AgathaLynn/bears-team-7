@@ -11,9 +11,9 @@ import { ErrorText, LargeText } from '../components/Text';
 
 class Register extends React.Component {
   state = {
-    email: '',
-    password: '',
-    repeatPassword: '',
+    email: 'w@w.com',
+    password: '123456',
+    repeatPassword: '123456',
   };
 
   render() {

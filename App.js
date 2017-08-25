@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { firebaseApp } from './app/config/firebase';
+import { firebaseApp, firebaseDb } from './app/config/firebase';
 import { Tabs, WelcomeRouter } from './app/config/router';
 import Splash from './app/screens/Splash';
 
@@ -16,10 +16,22 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
+    const userRef = firebaseDb().ref('users');
     // start watching for successful login or logout
     firebaseApp.auth().onAuthStateChanged((user, error) => {
       if (user) {
-        return this.setState(() => ({ user, email: '', password: '' }));
+        // check for 'found' user in DB
+        userRef.child(user.uid).once('value', snapshot => {
+          const found = snapshot.val() !== null;
+          if (!found) {
+            // put new user in firebaseDb 'users/'
+            const newUser = {
+              email: user.email,
+            };
+            userRef.child(user.uid).set(newUser);
+          }
+          return this.setState(() => ({ user, email: '', password: '' })); // or down one line?
+        });
       }
       if (error && error.message) {
         setTimeout(() => this.setState({ error: null }), 4000);

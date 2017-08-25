@@ -1,36 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, FlatList } from 'react-native';
-import { Card } from 'react-native-elements';
+import { View, FlatList } from 'react-native';
+
+import { firebaseDb } from '../config/firebase';
 import { PrimaryButton } from '../components/Form';
 import Container from '../components/Container';
-import { LargeText } from '../components/Text';
+import { PlainCard } from '../components/Card';
 import colors from '../config/colors';
-import fakeJobs from '../data/fakeJobs';
 
 class Welcome extends React.Component {
   state = {
-    jobs: fakeJobs,
+    jobs: [],
   };
-
   componentDidMount() {
-    // fetch jobs here in real use
+    const jobsRef = firebaseDb().ref('jobs');
+    jobsRef.once('value', dataSnapshot => {
+      const firebaseJobsObject = dataSnapshot.val();
+      if (!firebaseJobsObject) {
+        return this.setState({ jobs: [] });
+      }
+      const jobsArray = Object.keys(firebaseJobsObject).map(oneObj => {
+        return Object.assign({}, firebaseJobsObject[oneObj], {
+          key: oneObj,
+          applied: firebaseJobsObject[oneObj].applied || 0,
+        });
+      });
+      this.setState({ jobs: jobsArray });
+    });
   }
-  _renderCard = ({ item }) =>
-    (<Card>
-      <View>
-        <LargeText>
-          {item.title}
-        </LargeText>
-        <Text style={{ paddingTop: 20, color: '#9e9e9e' }}>
-          {item.description}
-        </Text>
-        <Text style={{ paddingTop: 20, color: 'red' }}>
-          {item.applied} people have applied for this job
-        </Text>
-      </View>
-    </Card>);
-
+  componentWillUnmount() {
+    const jobsRef = firebaseDb().ref('jobs');
+    jobsRef.off('value');
+  }
   render() {
     return (
       <Container>
@@ -45,11 +46,7 @@ class Welcome extends React.Component {
           />
         </View>
         <View style={{ flex: 5, width: '100%', borderColor: colors.iconSubtle, borderWidth: 2 }}>
-          <FlatList
-            data={this.state.jobs}
-            keyExtractor={item => item.id}
-            renderItem={item => this._renderCard(item)}
-          />
+          <FlatList data={this.state.jobs} renderItem={item => <PlainCard item={item.item} />} />
         </View>
       </Container>
     );

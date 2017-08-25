@@ -20,6 +20,7 @@ const fakeJobs = [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elit est, dictum rhoncus odio quis, sodales placerat nisi. ',
     tags: ['javascript', 'react-native'],
     applied: 4,
+    featured: true,
   },
   {
     id: 4,
@@ -35,6 +36,7 @@ const fakeJobs = [
     description: 'Test',
     tags: ['agile'],
     applied: 2,
+    featured: true,
   },
   {
     id: 6,
@@ -87,6 +89,7 @@ const fakeJobs = [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elit est, dictum rhoncus odio quis, sodales placerat nisi. ',
     tags: ['javascript', 'react'],
     applied: 22,
+    featured: true,
   },
   {
     id: 13,
@@ -117,6 +120,7 @@ const fakeJobs = [
     description: 'A real good job',
     tags: ['javascript', 'C++'],
     applied: 5,
+    featured: true,
   },
   {
     id: 17,
@@ -132,6 +136,7 @@ const fakeJobs = [
       'A job Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elit est, dictum rhoncus odio quis, sodales placerat nisi. Maecenas eu ante tempus, elementum tortor ac, imperdiet ante. Aenean eget orci sem. Aenean ut elit luctus, rhoncus diam sed, tincidunt orci. Aliquam elementum, lacus ut fringilla euismod, nulla nulla molestie augue, et tincidunt leo massa ut nisi. Duis pulvinar metus augue, sit amet tincidunt nibh ultrices eget. ',
     tags: ['javascript', 'react-native'],
     applied: 4,
+    featured: true,
   },
   {
     id: 19,

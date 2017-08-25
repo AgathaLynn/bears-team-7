@@ -7,8 +7,8 @@ import { ErrorText, LargeText } from '../components/Text';
 
 class Login extends React.Component {
   state = {
-    email: '',
-    password: '',
+    email: 'w@w.com',
+    password: '123456',
   };
   render() {
     const { error, login } = this.props.screenProps;
