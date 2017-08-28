@@ -25,10 +25,7 @@ export default class App extends React.Component {
           const found = snapshot.val() !== null;
           if (!found) {
             // put new user in firebaseDb 'users/'
-            const newUser = {
-              email: user.email,
-            };
-            userRef.child(user.uid).set(newUser);
+            userRef.child(user.uid).set({ email: user.email, photoURL: user.photoURL });
           }
           return this.setState(() => ({ user, email: '', password: '' })); // or down one line?
         });

@@ -21,8 +21,9 @@ class Favs extends React.Component {
   };
 
   componentDidMount() {
+    console.log('Favs mounted');
     const { uid } = this.props.screenProps.user;
-    const usersSavedJobsRef = firebaseDb().ref(`users/${uid}/jobs`);
+    const usersSavedJobsRef = firebaseDb().ref(`users/${uid}/savedJobs`);
     usersSavedJobsRef.on('value', dataSnapshot => {
       const jobs = dataSnapshot.val();
       if (!jobs) {
@@ -33,6 +34,7 @@ class Favs extends React.Component {
         const jobDetails = snapshot.val();
         jobDetailsArray = Object.keys(jobs).map(j => {
           jobDetails[j].key = j;
+          jobDetails[j].applied = jobDetails[j].applied || 0;
           return jobDetails[j];
         });
         this.setState({ jobs: jobDetailsArray });
@@ -41,13 +43,15 @@ class Favs extends React.Component {
   }
   componentWillUnmount() {
     const { uid } = this.props.screenProps.user;
-    const usersSavedJobsRef = firebaseDb().ref(`users/${uid}/jobs`);
+    const usersSavedJobsRef = firebaseDb().ref(`users/${uid}/savedJobs`);
     usersSavedJobsRef.off('value');
   }
   handleSaveJob = jobId => {
     const { uid } = this.props.screenProps.user;
-    firebaseDb().ref(`jobs/${jobId}/savedBy/${uid}`).remove();
-    firebaseDb().ref(`users/${uid}/jobs/${jobId}`).remove();
+    const updates = {};
+    updates[`jobs/${jobId}/savedBy/${uid}`] = null; //    this is favs page, so they always start
+    updates[`users/${uid}/savedJobs/${jobId}`] = null; // saved. Button always `nulls` them here.
+    return firebaseDb().ref().update(updates);
   };
   render() {
     if (this.state.jobs.length > 0) {

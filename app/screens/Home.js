@@ -47,7 +47,8 @@ class Home extends React.Component {
     return this.state.jobs.filter(
       entry =>
         entry.tags.indexOf(term) > -1 ||
-        entry.description.includes(term) ||
+        entry.shortDescription.includes(term) || // all are 'must-haves' this way.
+        entry.longDescription.includes(term) || // fn fails if any are `undefined`
         entry.title.includes(term),
     );
   };
@@ -63,16 +64,12 @@ class Home extends React.Component {
   handleLearnMore = jobId => this.props.navigation.navigate('JobDetail', { jobId });
   handleSaveJob = (jobId, saved) => {
     const { uid } = this.props.screenProps.user;
-    const oneJobRef = firebaseDb().ref(`jobs/${jobId}/savedBy/`);
-    const userJobRef = firebaseDb().ref(`users/${uid}/jobs/`);
-    if (!saved) {
-      oneJobRef.child(uid).set(true);
-      userJobRef.child(jobId).set(true);
-      return;
-    }
-    userJobRef.child(jobId).remove();
-    oneJobRef.child(uid).remove();
+    const updates = {};
+    updates[`jobs/${jobId}/savedBy/${uid}`] = !saved ? true : null;
+    updates[`users/${uid}/savedJobs/${jobId}`] = !saved ? true : null;
+    return firebaseDb().ref().update(updates);
   };
+
   checkForSaved = item => {
     if (!item.savedBy) return false;
     const { uid } = this.props.screenProps.user;

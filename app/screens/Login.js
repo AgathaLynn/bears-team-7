@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { KeyboardAvoidingView, TouchableOpacity, Keyboard } from 'react-native';
 
-import { Input, PrimaryButton } from '../components/Form'; // *see Foonote
+import { Input, PrimaryButton } from '../components/Form'; // *see Footnote
 import { ErrorText, LargeText } from '../components/Text';
 
 class Login extends React.Component {
