@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { firebaseApp, firebaseDb } from './app/config/firebase';
-import { Tabs, WelcomeRouter } from './app/config/router';
+import { Tabs, EmployerTabs, WelcomeRouter } from './app/config/router';
 import Splash from './app/screens/Splash';
 
 const initialState = {
@@ -22,12 +22,26 @@ export default class App extends React.Component {
       if (user) {
         // check for 'found' user in DB
         userRef.child(user.uid).once('value', snapshot => {
-          const found = snapshot.val() !== null;
+          const found = snapshot.val();
           if (!found) {
             // put new user in firebaseDb 'users/'
-            userRef.child(user.uid).set({ email: user.email, photoURL: user.photoURL });
+            userRef.child(user.uid).set({
+              email: user.email,
+              displayName: user.displayName,
+              photoURL: user.photoURL,
+              needsProfile: true,
+              isEmployer: false,
+            });
           }
-          return this.setState(() => ({ user, email: '', password: '' })); // or down one line?
+          const localUser = {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            needsProfile: !found ? true : found.needsProfile,
+            isEmployer: !found ? false : found.isEmployer,
+          };
+          return this.setState(() => ({ user: localUser, email: '', password: '' })); // or down one line?
         });
       }
       if (error && error.message) {
@@ -74,9 +88,13 @@ export default class App extends React.Component {
       return <Splash />;
     }
     if (this.state.user !== null) {
-      // react-navigation allows one object called `screenProps` to be passed to a navigator.
-      // Screens inside <Tabs> require user obj and the logoutUser function...
-      return <Tabs screenProps={{ user: this.state.user, logout: this.logoutUser }} />;
+      if (!this.state.user.isEmployer) {
+        // react-navigation allows one object called `screenProps` to be passed to a navigator.
+        // Screens inside <Tabs> require user obj and the logoutUser function...
+        return <Tabs screenProps={{ user: this.state.user, logout: this.logoutUser }} />;
+      }
+      // if user checks the `isEmployer`, send a different TabNavigator
+      return <EmployerTabs screenProps={{ user: this.state.user, logout: this.logoutUser }} />;
     }
     return (
       // and screens inside <WelcomeRouter> need user-auth functions and possible error

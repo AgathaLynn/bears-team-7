@@ -1,34 +1,97 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { View, Text } from 'react-native';
+import { Avatar, CheckBox } from 'react-native-elements';
+import md5 from 'md5';
 
+import { firebaseDb } from '../config/firebase';
 import Container from '../components/Container';
-import { PrimaryButton } from '../components/Form';
-import { LargeText } from '../components/Text';
+import { PrimaryButton, Input } from '../components/Form';
 
-const Profile = ({ screenProps }) => {
-  const { email, displayName, emailVerified } = screenProps.user;
-  const { logout } = screenProps;
-  return (
-    <Container>
-      <LargeText>
-        {email} is logged in
-      </LargeText>
-      <LargeText>
-        displayName: {displayName || 'none'}
-      </LargeText>
-      <LargeText>
-        emailVerified: {emailVerified ? 'yes' : 'no'}
-      </LargeText>
-      <PrimaryButton title="Log out" onPress={logout} />
-    </Container>
-  );
-};
+class Profile extends React.Component {
+  state = {
+    displayName: '',
+    dbUser: {},
+    touched: false,
+    userRef: firebaseDb().ref(`users/${this.props.screenProps.user.uid}`),
+  };
+  componentDidMount() {
+    const { userRef } = this.state;
+    userRef.on('value', dataSnapshot => {
+      const dbUser = dataSnapshot.val();
+      this.setState({ dbUser });
+    });
+  }
+  componentWillUnmount() {
+    const { userRef } = this.state;
+    userRef.off('value');
+  }
+  _handleDisplayName = displayName => this.setState({ displayName, touched: true });
+  _handleSubmit = () => {
+    const { userRef, displayName } = this.state;
+    if (!displayName.length) return false;
+    userRef.update({
+      displayName,
+      needsProfile: false,
+    });
+    return this.setState({ displayName: '', touched: false });
+  };
+  _handleCheck = () => {
+    const { userRef } = this.state;
+    userRef.update({
+      isEmployer: !this.state.dbUser.isEmployer,
+    });
+  };
+  render() {
+    if (!this.state.dbUser.email) return <Text>Loading</Text>;
+    const { email, displayName } = this.state.dbUser;
+    let { photoURL } = this.state.dbUser;
+    if (!photoURL) {
+      const hash = md5(email);
+      photoURL = `https://www.gravatar.com/avatar/${hash}`;
+    }
+    const { logout } = this.props.screenProps;
+    return (
+      <Container>
+        <Avatar style={{ flex: 2 }} large rounded source={{ uri: photoURL }} activeOpacity={0.7} />
+        <View style={{ flex: 3, alignItems: 'center' }}>
+          <Input label="Your email (this is not changable)" value={email} disabled />
+          <Input
+            label="Display Name"
+            placeholder={displayName}
+            value={this.state.displayName}
+            onChangeText={this._handleDisplayName}
+          />
+          <CheckBox
+            title="I am an Employer, not a job-seeker"
+            iconRight
+            checked={this.state.dbUser.isEmployer}
+            onIconPress={this._handleCheck}
+          />
+          <View style={{ flexDirection: 'row' }}>
+            <PrimaryButton title="Log out" onPress={logout} />
+            <PrimaryButton
+              title="Update Profile"
+              disabled={!this.state.touched}
+              onPress={() => this._handleSubmit(this.state.displayName)}
+            />
+          </View>
+        </View>
+      </Container>
+    );
+  }
+}
 
 Profile.propTypes = {
   screenProps: PropTypes.shape({
-    email: PropTypes.string,
-    displayName: PropTypes.string,
-    emailVerified: PropTypes.bool,
+    logout: PropTypes.func.isRequired,
+    user: PropTypes.shape({
+      uid: PropTypes.string,
+      email: PropTypes.string,
+      displayName: PropTypes.string,
+      photoURL: PropTypes.string,
+      needsProfile: PropTypes.bool,
+    }).isRequired,
   }).isRequired,
 };
 

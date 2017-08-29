@@ -26,6 +26,7 @@ class Home extends React.Component {
   state = initialState;
 
   componentDidMount() {
+    this._checkFirstRun();
     const jobsRef = firebaseDb().ref('jobs');
     jobsRef.on('value', dataSnapshot => {
       const firebaseJobsObject = dataSnapshot.val();
@@ -41,7 +42,16 @@ class Home extends React.Component {
       this.setState({ jobs: jobsArray });
     });
   }
-
+  componentWillUnmount() {
+    const jobsRef = firebaseDb().ref('jobs');
+    jobsRef.off('value');
+  }
+  _checkFirstRun = () => {
+    if (this.props.screenProps.user.needsProfile) {
+      console.log(this.props.screenProps.user.needsProfile);
+      this.props.navigation.navigate('Profile');
+    }
+  };
   _listBuild = searchTerm => {
     const term = searchTerm; // to work on case later
     return this.state.jobs.filter(

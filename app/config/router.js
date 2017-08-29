@@ -9,20 +9,18 @@ import History from '../screens/History';
 import Profile from '../screens/Profile';
 import Home from '../screens/Home';
 import Favs from '../screens/Favs';
-
+import EmployerHome from '../screens/EmployerHome';
 import Login from '../screens/Login';
 import Welcome from '../screens/Welcome';
 import Register from '../screens/Register';
 import JobDetail from '../screens/JobDetail';
 
 // https://github.com/react-community/react-navigation/issues/710#issuecomment-287132056
-const tabIcon = ({ tintColor, iconName }) => <Icon name={iconName} size={35} color={tintColor} />;
+const tabIcon = ({ focused, iconName }) =>
+  <Icon name={iconName} size={35} color={focused ? 'white' : colors.primary} />;
 tabIcon.propTypes = {
-  tintColor: PropTypes.string,
+  focused: PropTypes.bool.isRequired,
   iconName: PropTypes.string.isRequired,
-};
-tabIcon.defaultProps = {
-  tintColor: 'red',
 };
 
 export const HomeStack = StackNavigator({
@@ -40,39 +38,73 @@ export const Tabs = TabNavigator(
       screen: HomeStack,
       navigationOptions: {
         tabBarLabel: 'Home',
-        tabBarIcon: tabIcon({ iconName: 'home', tintColor: colors.iconSubtle }),
+        tabBarIcon: ({ focused }) => tabIcon({ iconName: 'home', focused }),
       },
     },
     Favs: {
       screen: Favs,
       navigationOptions: {
         tabBarLabel: 'Favs',
-        tabBarIcon: tabIcon({ iconName: 'star', tintColor: colors.iconSubtle }),
+        tabBarIcon: ({ focused }) => tabIcon({ iconName: 'star', focused }),
       },
     },
     History: {
       screen: History,
       navigationOptions: {
         tabBarLabel: 'History',
-        tabBarIcon: tabIcon({ iconName: 'list', tintColor: colors.iconSubtle }),
+        tabBarIcon: ({ focused }) => tabIcon({ iconName: 'list', focused }),
       },
     },
     Profile: {
       screen: Profile,
       navigationOptions: {
         tabBarLabel: 'Profile',
-        tabBarIcon: tabIcon({ iconName: 'account-circle', tintColor: colors.iconSubtle }),
+        tabBarIcon: ({ focused }) => tabIcon({ iconName: 'account-circle', focused }),
       },
     },
   },
   {
-    lazy: true,
+    swipeEnabled: true,
+    animationEnabled: true,
+    tabBarOptions: {
+      activeBackgroundColor: '#ccc',
+      activeTintColor: '#fff',
+    },
   },
 );
-
-Profile.propTypes = {
-  tintColor: PropTypes.string,
-};
+export const EmployerTabs = TabNavigator(
+  {
+    EmployerHome: {
+      screen: EmployerHome,
+      navigationOptions: {
+        tabBarLabel: 'Employer Home',
+        tabBarIcon: ({ focused }) => tabIcon({ iconName: 'home', focused }),
+      },
+    },
+    History: {
+      screen: History,
+      navigationOptions: {
+        tabBarLabel: 'History',
+        tabBarIcon: ({ focused }) => tabIcon({ iconName: 'list', focused }),
+      },
+    },
+    Profile: {
+      screen: Profile,
+      navigationOptions: {
+        tabBarLabel: 'Profile',
+        tabBarIcon: ({ focused }) => tabIcon({ iconName: 'account-circle', focused }),
+      },
+    },
+  },
+  {
+    swipeEnabled: true,
+    animationEnabled: true,
+    tabBarOptions: {
+      activeBackgroundColor: '#ccc',
+      activeTintColor: '#fff',
+    },
+  },
+);
 
 export const WelcomeRouter = StackNavigator({
   Welcome: {
