@@ -5,15 +5,19 @@ import PropTypes from 'prop-types';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import colors from '../config/colors';
-import History from '../screens/History';
-import Profile from '../screens/Profile';
-import Home from '../screens/Home';
-import Favs from '../screens/Favs';
-import EmployerHome from '../screens/EmployerHome';
-import Login from '../screens/Login';
-import Welcome from '../screens/Welcome';
-import Register from '../screens/Register';
-import JobDetail from '../screens/JobDetail';
+
+import Login from '../screens/Welcome/Login';
+import Welcome from '../screens/Welcome/Welcome';
+import Register from '../screens/Welcome/Register';
+
+import History from '../screens/User/History';
+import JobDetail from '../screens/User/JobDetail';
+import Home from '../screens/User/Home';
+import Favs from '../screens/User/Favs';
+
+import Profile from '../screens/Shared/Profile';
+
+import EmployerHome from '../screens/Employer/EmployerHome';
 
 // https://github.com/react-community/react-navigation/issues/710#issuecomment-287132056
 const tabIcon = ({ focused, iconName }) =>

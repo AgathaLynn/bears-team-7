@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Container from '../components/Container';
-import { LargeText } from '../components/Text';
+import Container from '../../components/Container';
+import { LargeText } from '../../components/Text';
 
 const JobDetail = props => {
   return (

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { firebaseApp, firebaseDb } from './app/config/firebase';
 import { Tabs, EmployerTabs, WelcomeRouter } from './app/config/router';
-import Splash from './app/screens/Splash';
+import Splash from './app/screens/Welcome/Splash';
 
 const initialState = {
   user: null,
@@ -53,15 +53,9 @@ export default class App extends React.Component {
     setTimeout(() => this.setState({ loading: false }), 1000);
   }
 
-  loginUser = (email, password) => {
-    firebaseApp
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      // a successful signin is seen by onAuthStateChanged (in cDM); failure triggers this `catch`:
-      .catch(error => {
-        setTimeout(() => this.setState({ error: null }), 4000);
-        return this.setState({ error: error.message });
-      });
+  setError = error => {
+    setTimeout(() => this.setState({ error: null }), 4000);
+    return this.setState(() => ({ error: error.message }));
   };
 
   logoutUser = () => {
@@ -72,39 +66,16 @@ export default class App extends React.Component {
     });
   };
 
-  createUser = (email, password, repeatPassword) => {
-    if (password !== repeatPassword) {
-      setTimeout(() => this.setState({ error: null }), 4000);
-      return this.setState({ error: 'Password and Repeat Password must match' });
-    }
-    firebaseApp.auth().createUserWithEmailAndPassword(email, password).catch(error => {
-      setTimeout(() => this.setState({ error: null }), 4000);
-      return this.setState(() => ({ error: error.message }));
-    });
-  };
-
   render() {
     if (this.state.loading) {
       return <Splash />;
     }
     if (this.state.user !== null) {
       if (!this.state.user.isEmployer) {
-        // react-navigation allows one object called `screenProps` to be passed to a navigator.
-        // Screens inside <Tabs> require user obj and the logoutUser function...
         return <Tabs screenProps={{ user: this.state.user, logout: this.logoutUser }} />;
       }
-      // if user checks the `isEmployer`, send a different TabNavigator
       return <EmployerTabs screenProps={{ user: this.state.user, logout: this.logoutUser }} />;
     }
-    return (
-      // and screens inside <WelcomeRouter> need user-auth functions and possible error
-      <WelcomeRouter
-        screenProps={{
-          login: this.loginUser,
-          create: this.createUser,
-          error: this.state.error,
-        }}
-      />
-    );
+    return <WelcomeRouter screenProps={{ error: this.state.error, setError: this.setError }} />;
   }
 }

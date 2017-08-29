@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
 
-import { InteractiveCard } from '../components/Card';
-import { LargeText } from '../components/Text';
-import { firebaseDb } from '../config/firebase';
-import colors from '../config/colors';
-import Container from '../components/Container';
+import { InteractiveCard } from '../../components/Card';
+import { LargeText } from '../../components/Text';
+import { firebaseDb } from '../../config/firebase';
+import colors from '../../config/colors';
+import Container from '../../components/Container';
 
 class Favs extends React.Component {
   static propTypes = {

@@ -4,9 +4,9 @@ import { View, Text } from 'react-native';
 import { Avatar, CheckBox } from 'react-native-elements';
 import md5 from 'md5';
 
-import { firebaseDb } from '../config/firebase';
-import Container from '../components/Container';
-import { PrimaryButton, Input } from '../components/Form';
+import { firebaseDb } from '../../config/firebase';
+import Container from '../../components/Container';
+import { PrimaryButton, Input } from '../../components/Form';
 
 class Profile extends React.Component {
   state = {

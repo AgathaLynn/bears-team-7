@@ -6,8 +6,9 @@ import { KeyboardAvoidingView, Keyboard, TouchableOpacity } from 'react-native';
 * will throw 'propTypes' errors in console (even though everything's fine, see:
 * https://github.com/react-native-training/react-native-elements/issues/502#issuecomment-317446366.)
 */
-import { Input, PrimaryButton } from '../components/Form';
-import { ErrorText, LargeText } from '../components/Text';
+import { Input, PrimaryButton } from '../../components/Form';
+import { ErrorText, LargeText } from '../../components/Text';
+import { firebaseApp } from '../../config/firebase';
 
 class Register extends React.Component {
   state = {
@@ -16,8 +17,17 @@ class Register extends React.Component {
     repeatPassword: '123456',
   };
 
+  create = (email, password, repeatPassword) => {
+    if (password !== repeatPassword) {
+      return this.props.screenProps.setError({ error: 'Password and Repeat Password must match' });
+    }
+    firebaseApp.auth().createUserWithEmailAndPassword(email, password).catch(error => {
+      this.props.screenProps.setError(error);
+    });
+  };
+
   render() {
-    const { error, create } = this.props.screenProps;
+    const { error } = this.props.screenProps;
     return (
       <KeyboardAvoidingView behavior="position">
         {error
@@ -53,7 +63,8 @@ class Register extends React.Component {
         />
         <PrimaryButton
           title="Create Account"
-          onPress={() => create(this.state.email, this.state.password, this.state.repeatPassword)}
+          onPress={() =>
+            this.create(this.state.email, this.state.password, this.state.repeatPassword)}
         />
       </KeyboardAvoidingView>
     );
@@ -63,7 +74,7 @@ class Register extends React.Component {
 Register.propTypes = {
   screenProps: PropTypes.shape({
     error: PropTypes.string,
-    create: PropTypes.func.isRequired,
+    setError: PropTypes.func.isRequired,
   }).isRequired,
 };
 

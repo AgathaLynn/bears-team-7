@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
 
-import { firebaseDb } from '../config/firebase';
-import { PrimaryButton } from '../components/Form';
-import Container from '../components/Container';
-import { PlainCard } from '../components/Card';
-import colors from '../config/colors';
+import { firebaseDb } from '../../config/firebase';
+import { PrimaryButton } from '../../components/Form';
+import Container from '../../components/Container';
+import { PlainCard } from '../../components/Card';
+import colors from '../../config/colors';
 
 class Welcome extends React.Component {
   state = {

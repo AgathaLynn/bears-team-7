@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { View, FlatList } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
-import { firebaseDb } from '../config/firebase';
-import { InteractiveCard } from '../components/Card';
-import Container from '../components/Container';
-import { LargeText } from '../components/Text';
-import colors from '../config/colors';
+import { firebaseDb } from '../../config/firebase';
+import { InteractiveCard } from '../../components/Card';
+import Container from '../../components/Container';
+import { LargeText } from '../../components/Text';
+import colors from '../../config/colors';
 
 const initialState = {
   jobs: [],

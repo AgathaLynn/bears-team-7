@@ -2,7 +2,7 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 import { Text } from 'react-native';
 // import { firebaseDb } from '../config/firebase';
-import Container from '../components/Container';
+import Container from '../../components/Container';
 
 const initialState = {};
 
