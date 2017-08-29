@@ -15,7 +15,7 @@ const initialState = {
   searchTerm: '',
 };
 
-class Home extends React.Component {
+export default class Home extends React.Component {
   static propTypes = {
     screenProps: PropTypes.object.isRequired, // eslint-disable-line
     navigation: PropTypes.shape({
@@ -122,5 +122,3 @@ class Home extends React.Component {
     );
   }
 }
-
-export default Home;

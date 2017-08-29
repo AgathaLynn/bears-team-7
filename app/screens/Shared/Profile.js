@@ -8,7 +8,20 @@ import { firebaseDb } from '../../config/firebase';
 import Container from '../../components/Container';
 import { PrimaryButton, Input } from '../../components/Form';
 
-class Profile extends React.Component {
+export default class Profile extends React.Component {
+  static propTypes = {
+    screenProps: PropTypes.shape({
+      logout: PropTypes.func.isRequired,
+      user: PropTypes.shape({
+        uid: PropTypes.string,
+        email: PropTypes.string,
+        displayName: PropTypes.string,
+        photoURL: PropTypes.string,
+        needsProfile: PropTypes.bool,
+      }).isRequired,
+    }).isRequired,
+  };
+
   state = {
     displayName: '',
     dbUser: {},
@@ -16,29 +29,26 @@ class Profile extends React.Component {
     userRef: firebaseDb().ref(`users/${this.props.screenProps.user.uid}`),
   };
   componentDidMount() {
-    const { userRef } = this.state;
-    userRef.on('value', dataSnapshot => {
+    this.state.userRef.on('value', dataSnapshot => {
       const dbUser = dataSnapshot.val();
       this.setState({ dbUser });
     });
   }
   componentWillUnmount() {
-    const { userRef } = this.state;
-    userRef.off('value');
+    this.state.userRef.off('value');
   }
   _handleDisplayName = displayName => this.setState({ displayName, touched: true });
   _handleSubmit = () => {
-    const { userRef, displayName } = this.state;
+    const { displayName } = this.state;
     if (!displayName.length) return false;
-    userRef.update({
+    this.state.userRef.update({
       displayName,
       needsProfile: false,
     });
     return this.setState({ displayName: '', touched: false });
   };
   _handleCheck = () => {
-    const { userRef } = this.state;
-    userRef.update({
+    this.state.userRef.update({
       isEmployer: !this.state.dbUser.isEmployer,
     });
   };
@@ -81,18 +91,3 @@ class Profile extends React.Component {
     );
   }
 }
-
-Profile.propTypes = {
-  screenProps: PropTypes.shape({
-    logout: PropTypes.func.isRequired,
-    user: PropTypes.shape({
-      uid: PropTypes.string,
-      email: PropTypes.string,
-      displayName: PropTypes.string,
-      photoURL: PropTypes.string,
-      needsProfile: PropTypes.bool,
-    }).isRequired,
-  }).isRequired,
-};
-
-export default Profile;

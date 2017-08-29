@@ -7,9 +7,7 @@ import { LargeText } from '../../components/Text';
 const JobDetail = props => {
   return (
     <Container>
-      <LargeText>
-        this is the job detail for {props.navigation.state.params.jobId}
-      </LargeText>
+      <LargeText>this is the job detail for {props.navigation.state.params.jobId}</LargeText>
     </Container>
   );
 };

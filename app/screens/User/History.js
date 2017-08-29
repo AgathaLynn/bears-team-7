@@ -3,7 +3,7 @@ import React from 'react';
 import Container from '../../components/Container';
 import { LargeText } from '../../components/Text';
 
-class History extends React.Component {
+export default class History extends React.Component {
   render() {
     return (
       <Container>
@@ -13,5 +13,3 @@ class History extends React.Component {
     );
   }
 }
-
-export default History;

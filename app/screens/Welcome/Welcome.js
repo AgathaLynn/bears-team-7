@@ -8,13 +8,15 @@ import Container from '../../components/Container';
 import { PlainCard } from '../../components/Card';
 import colors from '../../config/colors';
 
-class Welcome extends React.Component {
-  state = {
-    jobs: [],
+export default class Welcome extends React.Component {
+  static propTypes = {
+    navigation: PropTypes.object.isRequired, // eslint-disable-line
   };
+
+  state = { jobs: [], jobsRef: firebaseDb().ref('jobs') };
+
   componentDidMount() {
-    const jobsRef = firebaseDb().ref('jobs');
-    jobsRef.once('value', dataSnapshot => {
+    this.state.jobsRef.once('value', dataSnapshot => {
       const firebaseJobsObject = dataSnapshot.val();
       if (!firebaseJobsObject) {
         return this.setState({ jobs: [] });
@@ -29,8 +31,7 @@ class Welcome extends React.Component {
     });
   }
   componentWillUnmount() {
-    const jobsRef = firebaseDb().ref('jobs');
-    jobsRef.off('value');
+    this.state.jobsRef.off('value');
   }
   render() {
     return (
@@ -52,9 +53,3 @@ class Welcome extends React.Component {
     );
   }
 }
-
-Welcome.propTypes = {
-  navigation: PropTypes.object.isRequired, // eslint-disable-line
-};
-
-export default Welcome;
