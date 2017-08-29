@@ -53,14 +53,20 @@ export default class Profile extends React.Component {
     });
   };
   render() {
-    if (!this.state.dbUser.email) return <Text>Loading</Text>;
+    if (!this.state.dbUser.email) {
+      return (
+        <Container>
+          <Text>Loading</Text>
+        </Container>
+      );
+    }
+    const { logout } = this.props.screenProps;
     const { email, displayName } = this.state.dbUser;
     let { photoURL } = this.state.dbUser;
     if (!photoURL) {
       const hash = md5(email);
       photoURL = `https://www.gravatar.com/avatar/${hash}`;
     }
-    const { logout } = this.props.screenProps;
     return (
       <Container>
         <Avatar style={{ flex: 2 }} large rounded source={{ uri: photoURL }} activeOpacity={0.7} />
@@ -78,6 +84,9 @@ export default class Profile extends React.Component {
             checked={this.state.dbUser.isEmployer}
             onIconPress={this._handleCheck}
           />
+          <Text style={{ textAlign: 'center', fontSize: 10 }}>
+            (you must log out and sign in again for this checkbox to take effect.)
+          </Text>
           <View style={{ flexDirection: 'row' }}>
             <PrimaryButton title="Log out" onPress={logout} />
             <PrimaryButton

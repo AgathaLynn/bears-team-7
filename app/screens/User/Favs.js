@@ -12,12 +12,10 @@ export default class Favs extends React.Component {
   static propTypes = {
     screenProps: PropTypes.object.isRequired, // eslint-disable-line
   };
-
   state = {
     jobs: [],
-    usersSavedJobsRef: firebaseDb().ref(`users/${this.props.screenProps.user}/savedJobs`),
+    usersSavedJobsRef: firebaseDb().ref(`users/${this.props.screenProps.user.uid}/savedJobs`),
   };
-
   componentDidMount() {
     this.state.usersSavedJobsRef.on('value', dataSnapshot => {
       const jobs = dataSnapshot.val();
