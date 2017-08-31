@@ -18,7 +18,9 @@ import Favs from '../screens/User/Favs';
 import Profile from '../screens/Shared/Profile';
 
 import EmployerHome from '../screens/Employer/EmployerHome';
+import Applicants from '../screens/Employer/Applicants';
 import CreateJob from '../screens/Employer/CreateJob';
+import EditJob from '../screens/Employer/EditJob';
 
 // https://github.com/react-community/react-navigation/issues/710#issuecomment-287132056
 const tabIcon = ({ focused, iconName, iconSize = 35 }) => (
@@ -39,6 +41,18 @@ export const HomeStack = StackNavigator({
   },
   JobDetail: {
     screen: JobDetail,
+  },
+});
+
+export const EmployerHomeStack = StackNavigator({
+  Home: {
+    screen: EmployerHome,
+  },
+  Applicants: {
+    screen: Applicants,
+  },
+  EditJob: {
+    screen: EditJob,
   },
 });
 
@@ -85,7 +99,7 @@ export const Tabs = TabNavigator(
 export const EmployerTabs = TabNavigator(
   {
     EmployerHome: {
-      screen: EmployerHome,
+      screen: EmployerHomeStack,
       navigationOptions: {
         tabBarLabel: 'Employer Home',
         tabBarIcon: ({ focused }) => tabIcon({ iconName: 'home', focused }),

@@ -54,9 +54,9 @@ const MyInnerForm = props => {
     setFieldTouched,
     handleSubmit,
     handleReset,
-    uploaderUid,
+    uid,
   } = props;
-  values.uploaderUid = uploaderUid;
+  values.uploaderUid = uid;
   return (
     <ScrollView style={{ width: '95%' }}>
       <FormLabel>contact email</FormLabel>
@@ -164,7 +164,7 @@ MyInnerForm.propTypes = {
   values: PropTypes.object.isRequired, // eslint-disable-line
   touched: PropTypes.object.isRequired, // eslint-disable-line
   errors: PropTypes.object.isRequired, // eslint-disable-line
-  uploaderUid: PropTypes.string.isRequired,
+  uid: PropTypes.string.isRequired,
   dirty: PropTypes.bool.isRequired,
   isSubmitting: PropTypes.bool.isRequired,
   setFieldValue: PropTypes.func.isRequired,
@@ -191,9 +191,11 @@ const EnhancedForm = Formik({
     longDescription: Yup.string().required('A long desc is required'),
   }),
   handleSubmit: (values, { setSubmitting, resetForm, props }) => {
-    firebaseDb()
-      .ref('jobs')
-      .push(values)
+    const updates = {};
+    const newKey = firebaseDb().ref('jobs').push().key;
+    updates[`users/${props.uid}/createdJobs/${newKey}`] = true;
+    updates[`jobs/${newKey}`] = values;
+    firebaseDb().ref().update(updates)
       .then(() => {
         setSubmitting(false);
         Alert.alert(
@@ -201,7 +203,11 @@ const EnhancedForm = Formik({
           'Your job will be listed immediately',
           [
             { text: 'Post another job', onPress: () => resetForm() },
-            { text: 'Return to Employer Home', onPress: () => { resetForm(); props.nav('EmployerHome'); } },
+            { text: 'Return to Employer Home',
+              onPress: () => {
+                resetForm(); props.nav('EmployerHome');
+              },
+            },
           ],
           { cancelable: false },
         );
@@ -215,7 +221,7 @@ const CreateJob = ({ screenProps, navigation }) =>
       <LargeText style={{ textAlign: 'center', paddingTop: 40 }}>Create a new job</LargeText>
       <LargeText style={{ textAlign: 'center' }}>(All fields required)</LargeText>
     </View>
-    <EnhancedForm nav={navigation.navigate} uploaderUid={screenProps.user.uid} />
+    <EnhancedForm nav={navigation.navigate} uid={screenProps.user.uid} />
   </Container>);
 
 CreateJob.propTypes = {

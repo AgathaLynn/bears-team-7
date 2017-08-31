@@ -22,18 +22,15 @@ export default class Favs extends React.Component {
       if (!jobs) {
         return this.setState({ jobs: [] });
       }
-      let jobDetailsArray = [];
-      firebaseDb()
-        .ref('jobs/')
-        .once('value', snapshot => {
-          const jobDetails = snapshot.val();
-          jobDetailsArray = Object.keys(jobs).map(j => {
-            jobDetails[j].key = j;
-            jobDetails[j].applied = jobDetails[j].applied || 0;
-            return jobDetails[j];
-          });
-          this.setState({ jobs: jobDetailsArray });
+      firebaseDb().ref('jobs/').once('value', snapshot => {
+        const jobDetails = snapshot.val();
+        const jobDetailsArray = Object.keys(jobs).map(j => {
+          jobDetails[j].key = j;
+          jobDetails[j].applied = jobDetails[j].applied || 0;
+          return jobDetails[j];
         });
+        this.setState({ jobs: jobDetailsArray });
+      });
     });
   }
   componentWillUnmount() {
