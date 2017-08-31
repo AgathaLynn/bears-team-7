@@ -14,7 +14,7 @@ class Home extends React.Component {
   render() {
     return (
       <Container>
-        <Text>Employer Home screen</Text>
+        <Text>Employer Home screen. Hello</Text>
       </Container>
     );
   }

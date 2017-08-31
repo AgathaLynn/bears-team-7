@@ -77,7 +77,9 @@ export default class Home extends React.Component {
     const updates = {};
     updates[`jobs/${jobId}/savedBy/${uid}`] = !saved ? true : null;
     updates[`users/${uid}/savedJobs/${jobId}`] = !saved ? true : null;
-    return firebaseDb().ref().update(updates);
+    return firebaseDb()
+      .ref()
+      .update(updates);
   };
 
   checkForSaved = item => {
@@ -103,19 +105,21 @@ export default class Home extends React.Component {
             onChangeText={term => this._search(term)}
             placeholder="Search..."
           />
-          {!this.state.isSearching &&
-            <LargeText style={{ textAlign: 'center' }}>Featured Jobs:</LargeText>}
+          {!this.state.isSearching && (
+            <LargeText style={{ textAlign: 'center' }}>Featured Jobs:</LargeText>
+          )}
         </View>
         <View style={{ flex: 5, width: '100%', borderColor: colors.iconSubtle, borderWidth: 2 }}>
           <FlatList
             data={jobs}
-            renderItem={item =>
-              (<InteractiveCard
+            renderItem={item => (
+              <InteractiveCard
                 item={item.item}
                 handleSaveJob={this.handleSaveJob}
                 handleLearnMore={this.handleLearnMore}
                 saved={this.checkForSaved(item.item)}
-              />)}
+              />
+            )}
           />
         </View>
       </Container>

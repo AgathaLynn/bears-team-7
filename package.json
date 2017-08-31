@@ -31,6 +31,7 @@
     "color": "^2.0.0",
     "expo": "^19.0.0",
     "firebase": "^4.2.0",
+    "formik": "^0.8.9",
     "md5": "^2.2.1",
     "prop-types": "^15.5.10",
     "react": "16.0.0-alpha.12",
@@ -38,6 +39,7 @@
     "react-native-elements": "^0.15.0",
     "react-native-platform-stylesheet": "^0.0.6",
     "react-native-vector-icons": "^4.3.0",
-    "react-navigation": "^1.0.0-beta.11"
+    "react-navigation": "^1.0.0-beta.11",
+    "yup": "^0.22.0"
   }
 }

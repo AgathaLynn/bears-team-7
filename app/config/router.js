@@ -18,13 +18,19 @@ import Favs from '../screens/User/Favs';
 import Profile from '../screens/Shared/Profile';
 
 import EmployerHome from '../screens/Employer/EmployerHome';
+import CreateJob from '../screens/Employer/CreateJob';
 
 // https://github.com/react-community/react-navigation/issues/710#issuecomment-287132056
-const tabIcon = ({ focused, iconName }) =>
-  <Icon name={iconName} size={35} color={focused ? 'white' : colors.primary} />;
+const tabIcon = ({ focused, iconName, iconSize = 35 }) => (
+  <Icon name={iconName} size={iconSize} color={focused ? 'white' : colors.primary} />
+);
 tabIcon.propTypes = {
   focused: PropTypes.bool.isRequired,
   iconName: PropTypes.string.isRequired,
+  iconSize: PropTypes.number,
+};
+tabIcon.defaultProps = {
+  iconSize: 35,
 };
 
 export const HomeStack = StackNavigator({
@@ -85,11 +91,14 @@ export const EmployerTabs = TabNavigator(
         tabBarIcon: ({ focused }) => tabIcon({ iconName: 'home', focused }),
       },
     },
-    History: {
-      screen: History,
+    CreateJob: {
+      screen: CreateJob,
       navigationOptions: {
-        tabBarLabel: 'History',
-        tabBarIcon: ({ focused }) => tabIcon({ iconName: 'list', focused }),
+        tabBarLabel: ({ focused }) => {
+          return focused ? 'Create Job' : '';
+        },
+        tabBarIcon: ({ focused }) =>
+          tabIcon({ iconName: 'add-circle', focused, iconSize: focused ? 35 : 80 }),
       },
     },
     Profile: {
@@ -101,8 +110,6 @@ export const EmployerTabs = TabNavigator(
     },
   },
   {
-    swipeEnabled: true,
-    animationEnabled: true,
     tabBarOptions: {
       activeBackgroundColor: '#ccc',
       activeTintColor: '#fff',
