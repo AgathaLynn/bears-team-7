@@ -19,9 +19,9 @@ export default class Register extends React.Component {
   };
 
   state = {
-    email: 'w@w.com',
-    password: '123456',
-    repeatPassword: '123456',
+    email: '',
+    password: '',
+    repeatPassword: '',
   };
 
   create = (email, password, repeatPassword) => {

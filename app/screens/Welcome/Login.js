@@ -14,8 +14,8 @@ export default class Login extends React.Component {
     }).isRequired,
   };
 
-  state = { email: 'w@w.com', password: '123456' }; // TODO: blank these out later
-
+  state = { email: '', password: '' };
+  
   login = (email, password) => {
     firebaseApp
       .auth()
