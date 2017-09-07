@@ -59,6 +59,7 @@ class MyInnerForm extends React.Component {
       setFieldTouched,
       handleSubmit,
       handleReset,
+      handleDelete,
       values,
     } = this.props;
     return (
@@ -144,6 +145,13 @@ class MyInnerForm extends React.Component {
             disabled={!dirty || isSubmitting}
           />
           <Button
+            title="Delete"
+            raised
+            icon={{ name: 'code' }}
+            onPress={() => handleDelete()}
+            disabled={dirty || isSubmitting}
+          />
+          <Button
             title="Submit"
             raised
             icon={{ name: 'assignment-turned-in' }}
@@ -151,17 +159,17 @@ class MyInnerForm extends React.Component {
             disabled={isSubmitting}
           />
         </View>
-        {/* <DisplayFormikState {...this.props} /> */}
+        <DisplayFormikState {...this.props} />
       </ScrollView>
     );
   }
 }
 
-// const DisplayFormikState = props => (
-//   <View>
-//     <Text style={{ paddingHorizontal: 20 }}>{JSON.stringify(props, null, 2)}</Text>
-//   </View>
-// );
+const DisplayFormikState = props => (
+  <View>
+    <Text style={{ paddingHorizontal: 20 }}>{JSON.stringify(props, null, 2)}</Text>
+  </View>
+);
 
 MyInnerForm.propTypes = {
   touched: PropTypes.object.isRequired, // eslint-disable-line
@@ -174,6 +182,7 @@ MyInnerForm.propTypes = {
   setFieldTouched: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   handleReset: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
 };
 
 const EnhancedForm = Formik({
@@ -209,19 +218,41 @@ const EnhancedForm = Formik({
   },
 })(MyInnerForm);
 
-class EditJob extends React.Component {
-  state = { job: {} };
+class EditJob extends React.Component { // eslint-disable-line
+  state = {
+    job: {},
+    jobRef: firebaseDb().ref(`jobs/${this.props.navigation.state.params.jobId}`),
+  };
 
   componentDidMount() {
-    const jobRef = firebaseDb().ref(`jobs/${this.props.navigation.state.params.jobId}`);
-    jobRef.on('value', dataSnapshot => {
+    this.state.jobRef.on('value', dataSnapshot => {
       const job = dataSnapshot.val();
       if (!job) return this.setState({ job: {} });
       return this.setState({ job });
     });
   }
   componentWillUnmount() {
-    firebaseDb().ref(`jobs/${this.props.navigation.state.params.jobId}`).off('value');
+    this.state.jobRef.off('value');
+  }
+  handleDelete = () => {
+    const jobId = this.props.navigation.state.params.jobId;
+    const updates = {};
+    updates[`jobs/${jobId}`] = null;
+    updates[`users/${this.props.screenProps.user.uid}/createdJobs/${jobId}`] = null;
+    firebaseDb().ref().update(updates)
+      .then(() => {
+        this.setState({ job: {} });
+        Alert.alert(
+          'Job deleted.',
+          'Your job will be unlisted immediately',
+          [
+            { text: 'Return to Employer Home',
+              onPress: () => this.props.navigation.goBack(),
+            },
+          ],
+          { cancelable: false },
+        );
+      });
   }
   render() {
     if (!this.state.job) return <Container><Text>Loading</Text></Container>;
@@ -233,6 +264,7 @@ class EditJob extends React.Component {
       <EnhancedForm
         job={this.state.job}
         navigation={this.props.navigation}
+        handleDelete={this.handleDelete}
       />
     </Container>);
   }
@@ -240,11 +272,11 @@ class EditJob extends React.Component {
 
 EditJob.propTypes = {
   navigation: PropTypes.object.isRequired, // eslint-disable-line
-  // screenProps: PropTypes.shape({
-  //   user: PropTypes.shape({
-  //     uid: PropTypes.string.isRequired,
-  //   }).isRequired,
-  // }).isRequired,
+  screenProps: PropTypes.shape({
+    user: PropTypes.shape({
+      uid: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
 
 export default EditJob;

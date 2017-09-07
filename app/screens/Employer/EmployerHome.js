@@ -32,6 +32,7 @@ export default class Home extends React.Component {
         .on('value', snapshot => {
           const jobDetails = snapshot.val();
           const jobDetailsArray = Object.keys(jobs).map(j => {
+            if (!jobDetails[j]) return null;
             jobDetails[j].key = j;
             jobDetails[j].applied = jobDetails[j].applied || 0;
             return jobDetails[j];
@@ -42,7 +43,9 @@ export default class Home extends React.Component {
   }
   componentWillUnmount() {
     this.state.jobsRef.off('value');
-    firebaseDb().ref('jobs').off('value');
+    firebaseDb()
+      .ref('jobs')
+      .off('value');
   }
 
   handleViewApplicants = jobId => this.props.navigation.navigate('Applicants', { jobId });

@@ -14,8 +14,8 @@ export default class Login extends React.Component {
     }).isRequired,
   };
 
-  state = { email: '', password: '' };
-  
+  state = { email: 'a@a.com', password: '123456' };
+
   login = (email, password) => {
     firebaseApp
       .auth()
@@ -27,20 +27,22 @@ export default class Login extends React.Component {
     const { error } = this.props.screenProps;
     return (
       <KeyboardAvoidingView behavior="position">
-        {error
-          ? <ErrorText
+        {error ? (
+          <ErrorText
             style={{ paddingTop: 40, paddingBottom: 10, color: 'red', textAlign: 'center' }}
           >
             {error}
           </ErrorText>
-          : <TouchableOpacity
+        ) : (
+          <TouchableOpacity
             style={{
               width: '100%',
               paddingTop: 100,
               backgroundColor: 'transparent',
             }}
             onPress={() => Keyboard.dismiss()}
-          />}
+          />
+        )}
         <LargeText>Log in to your account</LargeText>
         <Input
           label="email"

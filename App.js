@@ -59,11 +59,14 @@ export default class App extends React.Component {
   };
 
   logoutUser = () => {
-    firebaseApp.auth().signOut().then(() => {
-      // return to initialState (after delay for splash screen)
-      setTimeout(() => this.setState(initialState), 1000);
-      this.setState({ loading: true });
-    });
+    firebaseApp
+      .auth()
+      .signOut()
+      .then(() => {
+        // return to initialState (after delay for splash screen)
+        setTimeout(() => this.setState(initialState), 1000);
+        this.setState({ loading: true });
+      });
   };
 
   render() {
@@ -72,10 +75,25 @@ export default class App extends React.Component {
     }
     if (this.state.user !== null) {
       if (!this.state.user.isEmployer) {
-        return <Tabs screenProps={{ user: this.state.user, logout: this.logoutUser }} />;
+        return (
+          <Tabs
+            onNavigationStateChange={null}
+            screenProps={{ user: this.state.user, logout: this.logoutUser }}
+          />
+        );
       }
-      return <EmployerTabs screenProps={{ user: this.state.user, logout: this.logoutUser }} />;
+      return (
+        <EmployerTabs
+          onNavigationStateChange={null}
+          screenProps={{ user: this.state.user, logout: this.logoutUser }}
+        />
+      );
     }
-    return <WelcomeRouter screenProps={{ error: this.state.error, setError: this.setError }} />;
+    return (
+      <WelcomeRouter
+        onNavigationStateChange={null}
+        screenProps={{ error: this.state.error, setError: this.setError }}
+      />
+    );
   }
 }
